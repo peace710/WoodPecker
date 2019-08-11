@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="trace_text_color">#FF8155</color>
+    <color name="trace_text_bold_color">#FFFFFF</color>
+    <color name="crash_info_background">#3c3c3c</color>
+    <color name="color_fault">#E040FB</color>
+
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_indigo">#3F51B5</color>
+    <color name="color_yellow">#F7FF75</color>
+
+</resources>

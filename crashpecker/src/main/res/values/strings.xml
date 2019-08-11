@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">CrashPecker</string>
+    <string name="title">Crash in %s (package : %s)</string>
+</resources>

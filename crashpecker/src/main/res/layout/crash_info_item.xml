@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/crash_info_item"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:padding="@dimen/trace_item_padding"
+    android:descendantFocusability="blocksDescendants">
+    
+    <Space
+        android:layout_width="@dimen/space_width"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/trace"
+        android:id="@+id/space"
+        />
+
+    <TextView
+        android:id="@+id/trace"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingTop="@dimen/trace_text_padding_top_bottom"
+        android:paddingBottom="@dimen/trace_text_padding_top_bottom"
+        android:textColor="@color/trace_text_color"
+        android:textSize="@dimen/trace_text_size"/>
+
+</android.support.constraint.ConstraintLayout>

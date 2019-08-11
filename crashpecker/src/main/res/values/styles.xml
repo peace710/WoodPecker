@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Pecker" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/PeckerActionBar</item>
+    </style>
+
+    <style name="PeckerActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <!--<item name="background">@color/color_indigo</item>-->
+        <!--<item name="backgroundStacked">@color/color_indigo</item>-->
+        <!--<item name="backgroundSplit">@color/color_indigo</item>-->
+        <item name="titleTextStyle">@style/PeckerTextStyle</item>
+    </style>
+
+    <style name="PeckerTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/color_white</item>
+    </style>
+
+    <style name="HighLightTextAppearance">
+        <item name="android:textColor">@color/color_fault</item>
+    </style>
+
+</resources>
