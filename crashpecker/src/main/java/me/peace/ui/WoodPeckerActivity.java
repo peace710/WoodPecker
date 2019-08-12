@@ -10,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -68,7 +70,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        enableDescendantFocusability();
+        enableDescendantFocusabilityWhenKeyEvent(event);
         return super.dispatchKeyEvent(event);
     }
 
@@ -76,6 +78,24 @@ public class WoodPeckerActivity extends AppCompatActivity {
         if (recyclerView != null){
             if (recyclerView.getDescendantFocusability() == RecyclerView.FOCUS_BLOCK_DESCENDANTS){
                 recyclerView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+            }
+        }
+    }
+
+    private void enableDescendantFocusabilityWhenKeyEvent(KeyEvent event){
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            int keyCode = event.getKeyCode();
+            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                if (recyclerView != null && recyclerView.getChildCount() > 0) {
+                    if (recyclerView.getDescendantFocusability() == RecyclerView.FOCUS_BLOCK_DESCENDANTS) {
+                        recyclerView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                        View child = recyclerView.getChildAt(0);
+                        if (child != null){
+                            child.setFocusable(true);
+                            child.requestFocus();
+                        }
+                    }
+                }
             }
         }
     }
