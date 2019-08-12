@@ -21,7 +21,7 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
     private static final String TRACE_AT = "at ";
     private ArrayList<String> traces;
     private ArrayList<String> keys;
-    private int selectPostion = -1;
+    private int selectPosition = -1;
 
     public TraceAdapter(ArrayList<String> traces,ArrayList<String> keys) {
         this.traces = traces;
@@ -42,6 +42,7 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
         controlSpaceState(crashViewHolder,trace.startsWith(TRACE_AT));
         controlTextState(crashViewHolder,trace.startsWith(TRACE_AT));
         crashViewHolder.trace.setText(handleHighLightText(crashViewHolder,trace,position));
+        controlTextSelected(crashViewHolder,position);
     }
 
     @Override
@@ -74,7 +75,9 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
                 if (trace.contains(key)){
                     int index = trace.indexOf("(");
                     if (index > 0){
-                        controlTextSelected(holder,position);
+                        if (selectPosition == -1){
+                            selectPosition = holder.getAdapterPosition();
+                        }
                         return highLightText(holder,trace,index);
                     }
                     break;
@@ -93,10 +96,7 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
     }
 
     private void controlTextSelected(CrashViewHolder holder,int position){
-        if (selectPostion == -1){
-            selectPostion = position;
-        }
-        if (selectPostion == position){
+        if (selectPosition == position){
             holder.itemView.setSelected(true);
         }else{
             holder.itemView.setSelected(false);
