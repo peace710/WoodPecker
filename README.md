@@ -12,7 +12,13 @@ compile 'me.peace:crashpecker:1.1.0'
 
 In your Application class:
 ```java
-WoodPecker.instance().fly(this);
+public class App extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        WoodPecker.instance().fly(this);
+    }
+}
 ```
 
 That is all! Woodpecker will automatically show a Activity when your app crash with uncaught exceptions.
