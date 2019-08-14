@@ -1,10 +1,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.peace.crashpecker">
 
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application>
-    <activity
-        android:theme="@style/Theme.Pecker"
-        android:name="me.peace.ui.WoodPeckerActivity"
-        android:process=":woodpecker" />
+        <activity
+            android:icon="@drawable/ic_woodpecker"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Pecker"
+            android:name="me.peace.ui.WoodPeckerActivity"
+            android:process=":woodpecker">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+        <provider
+            android:authorities="me.peace.woodpecker.provider"
+            android:name="me.peace.provider.WoodPeckerProvider"
+            android:process=":woodpecker"
+            android:exported="true"
+            ></provider>
     </application>
 </manifest>

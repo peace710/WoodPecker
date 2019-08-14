@@ -4,10 +4,14 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
@@ -49,5 +53,25 @@ public class Utils {
             name = packages[(packages.length - 1)];
         }
         return name;
+    }
+
+    public static String list2String(ArrayList<String> list){
+        if (list != null && list.size() > 0){
+            String str = list.remove(0);
+            for (int i = 0 ; i < list.size() ;i++){
+                str = str + "|" + list.get(i);
+            }
+            return str;
+        }
+        return "";
+    }
+
+    public static ArrayList<String> string2List(String str){
+        LogUtils.e(TAG,"string2List str ==> " + str);
+        if (!TextUtils.isEmpty(str)){
+            String[] traces = str.split("\\|");
+            return new ArrayList<>(Arrays.asList(traces));
+        }
+        return new ArrayList<>();
     }
 }

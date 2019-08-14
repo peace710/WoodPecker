@@ -76,7 +76,7 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
                     int index = trace.indexOf("(");
                     if (index > 0){
                         if (selectPosition == -1){
-                            selectPosition = holder.getAdapterPosition();
+                            selectPosition = position;
                         }
                         return highLightText(holder,trace,index);
                     }
