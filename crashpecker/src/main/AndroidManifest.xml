@@ -18,7 +18,7 @@
 
         </activity>
         <provider
-            android:authorities="me.peace.woodpecker.provider"
+            android:authorities="${applicationId}.provider"
             android:name="me.peace.provider.WoodPeckerProvider"
             android:process=":woodpecker"
             android:exported="true"

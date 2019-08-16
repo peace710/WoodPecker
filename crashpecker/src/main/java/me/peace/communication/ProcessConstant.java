@@ -1,11 +1,6 @@
 package me.peace.communication;
 
-import android.net.Uri;
-
 public class ProcessConstant {
-    private static final String AUTHORITY = "content://me.peace.woodpecker.provider";
-    public static final Uri INTEGRATION_URI = Uri.parse(AUTHORITY);
-
     public static final String METHOD_SAVE_SP = "METHOD_SAVE_SP";
     public static final String METHOD_LOAD_SP = "METHOD_LOAD_SP";
 
