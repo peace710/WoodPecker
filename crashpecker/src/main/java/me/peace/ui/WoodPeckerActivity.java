@@ -9,10 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +21,7 @@ import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
 import me.peace.crashpecker.R;
 import me.peace.utils.CrashUtils;
+import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
 
 public class WoodPeckerActivity extends AppCompatActivity {
@@ -56,6 +57,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new TraceAdapter(list,keys);
         recyclerView.setAdapter(adapter);
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
     private void obtainIntent(){
@@ -112,12 +114,6 @@ public class WoodPeckerActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        enableDescendantFocusabilityWhenKeyEvent(event);
-        return super.dispatchKeyEvent(event);
-    }
-
     private void enableDescendantFocusability(){
         if (recyclerView != null){
             if (recyclerView.getDescendantFocusability() == RecyclerView.FOCUS_BLOCK_DESCENDANTS){
@@ -126,21 +122,29 @@ public class WoodPeckerActivity extends AppCompatActivity {
         }
     }
 
-    private void enableDescendantFocusabilityWhenKeyEvent(KeyEvent event){
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            int keyCode = event.getKeyCode();
-            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-                if (recyclerView != null && recyclerView.getChildCount() > 0) {
-                    if (recyclerView.getDescendantFocusability() == RecyclerView.FOCUS_BLOCK_DESCENDANTS) {
-                        recyclerView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-                        View child = recyclerView.getChildAt(0);
-                        if (child != null){
-                            child.setFocusable(true);
-                            child.requestFocus();
-                        }
+    private void enableDescendantFocusabilityTv(){
+        LogUtils.e(TAG,"isPhone = " + Utils.isPhone(this));
+        if (!Utils.isPhone(this)){
+            if (recyclerView != null && recyclerView.getChildCount() > 0) {
+                if (recyclerView.getDescendantFocusability() == RecyclerView.FOCUS_BLOCK_DESCENDANTS) {
+                    recyclerView.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                    View child = recyclerView.getChildAt(0);
+                    if (child != null){
+                        child.setFocusable(true);
+                        child.requestFocus();
                     }
                 }
             }
         }
     }
+
+    private ViewTreeObserver.OnGlobalLayoutListener listener  = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            enableDescendantFocusabilityTv();
+            if (recyclerView != null){
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        }
+    };
 }

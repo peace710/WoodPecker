@@ -1,9 +1,16 @@
 package me.peace.utils;
 
 import android.app.ActivityManager;
+import android.app.UiModeManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.BatteryManager;
+import android.telecom.TelecomManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +20,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static android.content.Context.UI_MODE_SERVICE;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -73,5 +82,51 @@ public class Utils {
             return new ArrayList<>(Arrays.asList(traces));
         }
         return new ArrayList<>();
+    }
+
+    public static boolean isTvUiMode(Context context) {
+        if (context != null) {
+            UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+            if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+                LogUtils.e(TAG,"isTvUiMode true");
+                return true;
+            } else {
+                LogUtils.e(TAG,"isTvUiMode false");
+                return false;
+            }
+        }
+        LogUtils.e(TAG,"isTvUiMode context null false");
+        return false;
+    }
+
+    public static boolean checkTelephonyIsPhone(Context context){
+        if (context != null){
+            TelephonyManager manager =
+                (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+            return manager.getPhoneType() != TelephonyManager.PHONE_TYPE_NONE;
+        }
+        return false;
+    }
+
+    public static  boolean checkBatteryIsPhone(Context context){
+        if (context != null){
+            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+            Intent batteryStatus = context.registerReceiver(null,intentFilter);
+            int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
+            boolean isCharging = status == BatteryManager.BATTERY_STATUS_FULL;
+
+            int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED,-1);
+            boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+
+            return !(isCharging && acCharge);
+        }
+        return false;
+    }
+
+    public static boolean isPhone(Context context){
+        if (context != null){
+            return checkBatteryIsPhone(context) && checkTelephonyIsPhone(context);
+        }
+        return false;
     }
 }
