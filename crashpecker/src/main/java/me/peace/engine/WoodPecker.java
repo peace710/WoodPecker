@@ -82,7 +82,7 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    public void handleException(Thread thread, Throwable throwable) {
+    private void handleException(Thread thread, Throwable throwable) {
         ArrayList<String> traces = trace(throwable);
         String appInfo = appInfo();
         if (jump) {
