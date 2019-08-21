@@ -7,7 +7,7 @@ A Uncaught Exception Handler library ~~studied~~ copied from [drakeet](https://g
 To add a dependency using Gradle:
 
 ```groovy
-compile 'me.peace:crashpecker:1.1.0'
+implementation 'me.peace:crashpecker:2.0.0'
 ```
 
 In your Application class:
@@ -16,7 +16,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        WoodPecker.instance().fly(this);
+         WoodPecker.instance().with(new String[]{"com.addon"}).jump(false).fly(this);
     }
 }
 ```
