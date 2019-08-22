@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +60,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         adapter = new TraceAdapter(list,keys);
         recyclerView.setAdapter(adapter);
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
+        noProblemTip();
     }
 
     private void obtainIntent(){
@@ -86,6 +89,8 @@ public class WoodPeckerActivity extends AppCompatActivity {
                     recyclerView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
+            }else{
+                toast(R.string.app_no_problem);
             }
         }
     }
@@ -149,5 +154,17 @@ public class WoodPeckerActivity extends AppCompatActivity {
             }
         }
     };
+
+    private void toast(@StringRes int id){
+        Toast.makeText(this,id,Toast.LENGTH_LONG).show();
+    }
+
+    private void noProblemTip(){
+        if (withTrace){
+            if (list != null && list.size() == 0){
+                toast(R.string.app_no_problem);
+            }
+        }
+    }
 
 }
