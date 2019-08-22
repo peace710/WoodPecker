@@ -2,6 +2,7 @@ package me.peace.engine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,8 +109,11 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
 
     private ArrayList<String> trace(Throwable throwable){
         String trace = Utils.getStackTrace(throwable);
-        String[] traces = trace.split("\n");
-        return new ArrayList<>(Arrays.asList(traces));
+        if (!TextUtils.isEmpty(trace)) {
+            String[] traces = trace.split("\n");
+            return new ArrayList<>(Arrays.asList(traces));
+        }
+        return new ArrayList<>();
     }
 
     private String appInfo(){

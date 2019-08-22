@@ -74,16 +74,18 @@ public class WoodPeckerActivity extends AppCompatActivity {
         if (!withTrace) {
             String trace = CrashUtils.read(this);
             Log.e(TAG,"withTrace = " + trace);
-            String[] traces = trace.split("\n");
-            ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
-            if (list != null && list.size() > 0) {
-                loadHighLightKeys();
-                loadAppInfo();
-                setAppInfo();
-                this.list = list;
-                adapter = new TraceAdapter(this.list,this.keys);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+            if (!TextUtils.isEmpty(trace)) {
+                String[] traces = trace.split("\n");
+                ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
+                if (list != null && list.size() > 0) {
+                    loadHighLightKeys();
+                    loadAppInfo();
+                    setAppInfo();
+                    this.list = list;
+                    adapter = new TraceAdapter(this.list, this.keys);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
             }
         }
     }
@@ -147,4 +149,5 @@ public class WoodPeckerActivity extends AppCompatActivity {
             }
         }
     };
+
 }
