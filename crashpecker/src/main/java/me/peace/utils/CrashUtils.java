@@ -55,6 +55,8 @@ public class CrashUtils {
         PrintWriter writer;
         try {
             writer = new PrintWriter(file);
+            Throwable cause = throwable.getCause();
+            throwable = cause == null ? throwable : cause;
             throwable.printStackTrace(writer);
             writer.close();
         } catch (Exception e) {

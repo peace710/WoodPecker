@@ -44,6 +44,8 @@ public class Utils {
     public static String getStackTrace(Throwable throwable){
         Writer writer = new StringWriter();
         PrintWriter printWriter = new PrintWriter(writer);
+        Throwable cause = throwable.getCause();
+        throwable = cause == null ? throwable : cause;
         throwable.printStackTrace(printWriter);
         printWriter.close();
         return writer.toString();
