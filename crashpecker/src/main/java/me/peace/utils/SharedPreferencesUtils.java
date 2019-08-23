@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-public class SharedPrefrencesUtils {
+public class SharedPreferencesUtils {
     public static SharedPreferences getSharedPreferences(Context context,String name) {
         if (context == null){
             return null;
