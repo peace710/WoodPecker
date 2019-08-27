@@ -10,7 +10,7 @@ import java.util.Arrays;
 import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
 import me.peace.crashpecker.R;
-import me.peace.ui.CrashInfoActivity;
+import me.peace.ui.WoodPeckerActivity;
 import me.peace.utils.CrashUtils;
 import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
@@ -105,7 +105,7 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
     }
 
     private void startWoodPecker(ArrayList<String> traces,String appInfo){
-        Intent intent = new Intent(applicationContext, CrashInfoActivity.class);
+        Intent intent = new Intent(applicationContext, WoodPeckerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.KEY_TRACES, traces);
         intent.putExtra(Constant.KEY_APP_INFO, appInfo);

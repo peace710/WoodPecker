@@ -26,8 +26,8 @@ import me.peace.utils.CrashUtils;
 import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
 
-public class CrashInfoActivity extends AppCompatActivity {
-    private static final String TAG = CrashInfoActivity.class.getSimpleName();
+public class WoodPeckerActivity extends AppCompatActivity {
+    private static final String TAG = WoodPeckerActivity.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private ArrayList<String> list = new ArrayList<>();
