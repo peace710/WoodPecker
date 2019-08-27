@@ -4,8 +4,8 @@ import android.content.Context;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -31,16 +31,19 @@ public class CrashUtils {
         return write(file,throwable);
     }
 
-    private static boolean createFile(File file,int crashRecordCount){
+    private static boolean createFile(final File file, int crashRecordCount){
         if (file != null){
             try {
                 File dir = new File(file.getParent());
                 dir.mkdirs();
-                File[] childFiles = dir.listFiles();
-                if (childFiles != null && childFiles.length == crashRecordCount){
-                    File firstModifiedFile = findFirstModifiedFile(dir);
-                    if (firstModifiedFile != null){
-                        firstModifiedFile.delete();
+                File[] childFiles = listFiles(dir);
+                if (childFiles != null){
+                    int count = childFiles.length - crashRecordCount;
+                    for (int i = 0 ; i <= count ; i++) {
+                        File firstModifiedFile = findFirstModifiedFile(dir);
+                        if (firstModifiedFile != null) {
+                            firstModifiedFile.delete();
+                        }
                     }
                 }
                 file.createNewFile();
@@ -68,29 +71,29 @@ public class CrashUtils {
     }
 
     private static File findLastModifiedFile(File file){
-        File lastModifiedFlie = null;
+        File lastModifiedFile = null;
         long timestamp = -1;
-        for (File f : file.listFiles()){
+        for (File f : listFiles(file)){
             long lastModified = f.lastModified();
             if (lastModified > timestamp){
                 timestamp = lastModified;
-                lastModifiedFlie = f;
+                lastModifiedFile = f;
             }
         }
-        return lastModifiedFlie;
+        return lastModifiedFile;
     }
 
     private static File findFirstModifiedFile(File file){
-        File firstModifiedFlie = null;
+        File firstModifiedFile = null;
         long timestamp = Long.MAX_VALUE;
-        for (File f : file.listFiles()){
+        for (File f : listFiles(file)){
             long lastModified = f.lastModified();
             if (lastModified < timestamp){
                 timestamp = lastModified;
-                firstModifiedFlie = f;
+                firstModifiedFile = f;
             }
         }
-        return firstModifiedFlie;
+        return firstModifiedFile;
     }
 
     public static String read(Context context){
@@ -115,6 +118,21 @@ public class CrashUtils {
             }
         }
         return "";
+    }
+
+    private static File[] listFiles(File file){
+        if (file == null){
+            return new File[0];
+        }
+        if (!file.isDirectory()){
+            return new File[0];
+        }
+        return file.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return Utils.contains(name);
+            }
+        });
     }
 
 }

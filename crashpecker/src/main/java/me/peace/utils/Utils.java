@@ -20,6 +20,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static android.content.Context.UI_MODE_SERVICE;
 
@@ -130,5 +131,12 @@ public class Utils {
             return checkBatteryIsPhone(context) && checkTelephonyIsPhone(context);
         }
         return false;
+    }
+
+    public static boolean contains(String str){
+        String regex = "^.*\\d{4}[-]([0][1-9]|(1[0-2]))[-](0[1-9]|([012]\\d)|(3[01]))([-])(" +
+            "([0-1]{1}[0-9]{1})|([2]{1}[0-4]{1}))([-])(([0-5]{1}[0-9]{1}))([-])((" +
+            "([0-5]{1}[0-9]{1}))).*$";
+        return Pattern.matches(regex,str);
     }
 }
