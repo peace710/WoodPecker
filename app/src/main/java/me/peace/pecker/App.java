@@ -8,6 +8,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        WoodPecker.instance().with(getResources().getStringArray(R.array.keys)).jump(false).count(3).fly(this);
+        WoodPecker.instance().with(getResources().getStringArray(R.array.keys)).jump(true).count(10).fly(this);
     }
 }

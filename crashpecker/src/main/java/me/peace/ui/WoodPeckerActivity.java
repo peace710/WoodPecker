@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -75,38 +76,49 @@ public class WoodPeckerActivity extends AppCompatActivity {
 
     private void loadLocalTrace(){
         if (!withTrace) {
-            String trace = CrashUtils.read(this);
-            Log.e(TAG,"withTrace = " + trace);
-            if (!TextUtils.isEmpty(trace)) {
-                String[] traces = trace.split("\n");
-                ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
-                if (list != null && list.size() > 0) {
-                    loadHighLightKeys();
-                    loadAppInfo();
-                    setAppInfo();
-                    this.list = list;
-                    adapter = new TraceAdapter(this.list, this.keys);
-                    recyclerView.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+            File file = CrashUtils.getCrashFile(this);
+            if (file != null) {
+                String trace = CrashUtils.read(file);
+                Log.e(TAG, "withTrace = " + trace);
+                if (!TextUtils.isEmpty(trace)) {
+                    String[] traces = trace.split("\n");
+                    ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
+                    if (list != null && list.size() > 0) {
+                        loadConfig(file);
+                        this.list = list;
+                        adapter = new TraceAdapter(this.list, this.keys);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                        return;
+                    }
                 }
-            }else{
-                toast(R.string.app_no_problem);
             }
+            toast(R.string.app_no_problem);
         }
     }
 
-    private void loadHighLightKeys(){
+    private void loadConfig(File file){
         ProcessDispatcher dispatcher = new ProcessDispatcher();
         String str = dispatcher.loadSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_HIGH_LIGHT,
             "");
         keys = Utils.string2List(str);
+
+        String applicationName = dispatcher.loadSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME,
+            "");
+
+        if (TextUtils.isEmpty(applicationName)){
+            return;
+        }
+
+        String dateTime = getCrashDate(file.getName());
+        if (TextUtils.isEmpty(dateTime)){
+            return;
+        }
+        String title = getResources().getString(R.string.title);
+        appInfo = String.format(title,applicationName,dateTime);
+        setAppInfo();
     }
 
-    private void loadAppInfo(){
-        ProcessDispatcher dispatcher = new ProcessDispatcher();
-        appInfo = dispatcher.loadSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_APP_INFO,
-            "");
-    }
 
     @Override
     protected void onDestroy() {
@@ -165,6 +177,17 @@ public class WoodPeckerActivity extends AppCompatActivity {
                 toast(R.string.app_no_problem);
             }
         }
+    }
+
+    private String getCrashDate(String fileName){
+        try {
+            String str = fileName.substring(0,fileName.indexOf("."));
+            String[] strs = str.split("-");
+            return strs[1] + "-" + strs[2] + "-" + strs[3] + " " + strs[4] + ":" + strs[5] + ":" + strs[6];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
 }

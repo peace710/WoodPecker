@@ -14,9 +14,10 @@ import java.util.Date;
 import me.peace.constant.Constant;
 
 public class CrashUtils {
-    public static boolean save(Context context, Throwable throwable,int crashRecordCount){
+    public static boolean save(Context context, Throwable throwable,
+                               Date crashDate,int crashRecordCount){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        String fileName = "Crash-" + format.format(new Date()) + ".log";
+        String fileName = "Crash-" + format.format(crashDate) + ".log";
         String crashDir = context.getCacheDir().getPath() + Constant.CRASH_DIR;
         String crashPath = crashDir + fileName;
 
@@ -96,28 +97,35 @@ public class CrashUtils {
         return firstModifiedFile;
     }
 
-    public static String read(Context context){
+    public static File getCrashFile(Context context){
         String crashDir = context.getCacheDir().getPath() + Constant.CRASH_DIR;
         File file = new File(crashDir);
         if (file.exists()){
             File lastModifiedFile = findLastModifiedFile(file);
             if (lastModifiedFile != null) {
-                StringBuffer sb = new StringBuffer();
-                try {
-                    FileReader reader = new FileReader(lastModifiedFile);
-                    BufferedReader bufferedReader = new BufferedReader(reader);
-                    String str;
-                    while ((str = bufferedReader.readLine()) != null) {
-                        sb.append(str.trim()).append("\n");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return "";
-                }
-                return sb.toString();
+               return lastModifiedFile;
             }
         }
-        return "";
+        return null;
+    }
+
+    public static String read(File file){
+        if (file == null){
+            return "";
+        }
+        StringBuffer sb = new StringBuffer();
+        try {
+            FileReader reader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String str;
+            while ((str = bufferedReader.readLine()) != null) {
+                sb.append(str.trim()).append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return sb.toString();
     }
 
     private static File[] listFiles(File file){

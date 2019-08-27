@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
@@ -92,15 +94,18 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
 
     private void handleException(Thread thread, Throwable throwable) {
         ArrayList<String> traces = trace(throwable);
-        String appInfo = appInfo();
+        Date crashDate = new Date();
+        String appInfo = appInfo(crashDate);
         if (jump) {
             startWoodPecker(traces,appInfo);
         }
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,
             Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
+        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME,
+            Utils.getApplicationName(applicationContext));
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_INFO,
             appInfo);
-        CrashUtils.save(applicationContext,throwable,crashRecordCount);
+        CrashUtils.save(applicationContext,throwable,crashDate,crashRecordCount);
 
     }
 
@@ -123,9 +128,11 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
         return new ArrayList<>();
     }
 
-    private String appInfo(){
+    private String appInfo(Date crashDate){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        String dateTime = format.format(crashDate);
         String title = applicationContext.getResources().getString(R.string.title);
         String applicationName = Utils.getApplicationName(applicationContext);
-        return String.format(title,applicationName,applicationContext.getPackageName());
+        return String.format(title,applicationName,dateTime);
     }
 }
