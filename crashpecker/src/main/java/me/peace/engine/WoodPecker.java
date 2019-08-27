@@ -10,7 +10,7 @@ import java.util.Arrays;
 import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
 import me.peace.crashpecker.R;
-import me.peace.ui.WoodPeckerActivity;
+import me.peace.ui.CrashInfoActivity;
 import me.peace.utils.CrashUtils;
 import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
@@ -23,11 +23,13 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
     private Context applicationContext;
     private ArrayList<String> keys;
     private boolean jump = true;
+    private int crashRecordCount;
     private ProcessDispatcher dispatcher;
 
     private WoodPecker() {
         keys = new ArrayList<>();
         dispatcher = new ProcessDispatcher();
+        crashRecordCount = Constant.DEFAULT_MAX_SAVE_FILE_COUNT;
     }
 
     private static class WoodPeckerHolder {
@@ -56,6 +58,11 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
 
     public WoodPecker jump(boolean jump){
         this.jump = jump;
+        return this;
+    }
+
+    public WoodPecker count(int count){
+        this.crashRecordCount = count > 0 ? count : Constant.DEFAULT_MAX_SAVE_FILE_COUNT;
         return this;
     }
 
@@ -93,12 +100,12 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
             Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_INFO,
             appInfo);
-        CrashUtils.save(applicationContext,throwable);
+        CrashUtils.save(applicationContext,throwable,crashRecordCount);
 
     }
 
     private void startWoodPecker(ArrayList<String> traces,String appInfo){
-        Intent intent = new Intent(applicationContext, WoodPeckerActivity.class);
+        Intent intent = new Intent(applicationContext, CrashInfoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.KEY_TRACES, traces);
         intent.putExtra(Constant.KEY_APP_INFO, appInfo);

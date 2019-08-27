@@ -8,7 +8,7 @@
             android:icon="@drawable/ic_woodpecker"
             android:label="@string/app_name"
             android:theme="@style/Theme.Pecker"
-            android:name="me.peace.ui.WoodPeckerActivity"
+            android:name="me.peace.ui.CrashInfoActivity"
             android:process=":woodpecker">
 
             <intent-filter>

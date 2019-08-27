@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +14,7 @@ import java.util.Date;
 import me.peace.constant.Constant;
 
 public class CrashUtils {
-    public static boolean save(Context context, Throwable throwable){
+    public static boolean save(Context context, Throwable throwable,int crashRecordCount){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String fileName = "Crash-" + format.format(new Date()) + ".log";
         String crashDir = context.getCacheDir().getPath() + Constant.CRASH_DIR;
@@ -23,20 +24,20 @@ public class CrashUtils {
         if (file.exists()){
             file.delete();
         }else{
-            if (!createFile(file)){
+            if (!createFile(file,crashRecordCount)){
                 return false;
             }
         }
         return write(file,throwable);
     }
 
-    private static boolean createFile(File file){
+    private static boolean createFile(File file,int crashRecordCount){
         if (file != null){
             try {
                 File dir = new File(file.getParent());
                 dir.mkdirs();
                 File[] childFiles = dir.listFiles();
-                if (childFiles != null && childFiles.length == Constant.MAX_SAVE_FILE_COUNT){
+                if (childFiles != null && childFiles.length == crashRecordCount){
                     File firstModifiedFile = findFirstModifiedFile(dir);
                     if (firstModifiedFile != null){
                         firstModifiedFile.delete();
