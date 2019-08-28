@@ -43,17 +43,17 @@ public class WoodPeckerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crash_info);
         obtainIntent();
         initView();
-        loadLocalTrace();
+        handleCrashTrace();
+        setAppTitleInfo();
     }
 
-    private void setAppInfo(){
+    private void setAppTitleInfo(){
         if (!TextUtils.isEmpty(appInfo)){
             setTitle(appInfo);
         }
     }
 
     private void initView(){
-        setAppInfo();
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -61,7 +61,6 @@ public class WoodPeckerActivity extends AppCompatActivity {
         adapter = new TraceAdapter(list,keys);
         recyclerView.setAdapter(adapter);
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
-        noProblemTip();
     }
 
     private void obtainIntent(){
@@ -74,27 +73,33 @@ public class WoodPeckerActivity extends AppCompatActivity {
         }
     }
 
+    private void handleCrashTrace(){
+        if (withTrace){
+            noProblemTip();
+        }else{
+            loadLocalTrace();
+        }
+    }
+
     private void loadLocalTrace(){
-        if (!withTrace) {
-            File file = CrashUtils.getCrashFile(this);
-            if (file != null) {
-                String trace = CrashUtils.read(file);
-                Log.e(TAG, "withTrace = " + trace);
-                if (!TextUtils.isEmpty(trace)) {
-                    String[] traces = trace.split("\n");
-                    ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
-                    if (list != null && list.size() > 0) {
-                        loadConfig(file);
-                        this.list = list;
-                        adapter = new TraceAdapter(this.list, this.keys);
-                        recyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                        return;
-                    }
+        File file = CrashUtils.getCrashFile(this);
+        if (file != null) {
+            String trace = CrashUtils.read(file);
+            Log.e(TAG, "withTrace = " + trace);
+            if (!TextUtils.isEmpty(trace)) {
+                String[] traces = trace.split("\n");
+                ArrayList<String> list = new ArrayList<>(Arrays.asList(traces));
+                if (list != null && list.size() > 0) {
+                    loadConfig(file);
+                    this.list = list;
+                    adapter = new TraceAdapter(this.list, this.keys);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    return;
                 }
             }
-            toast(R.string.app_no_problem);
         }
+        toast(R.string.app_no_problem);
     }
 
     private void loadConfig(File file){
@@ -116,7 +121,6 @@ public class WoodPeckerActivity extends AppCompatActivity {
         }
         String title = getResources().getString(R.string.title);
         appInfo = String.format(title,applicationName,dateTime);
-        setAppInfo();
     }
 
 
