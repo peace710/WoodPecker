@@ -9,6 +9,7 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.Pecker"
             android:name="me.peace.ui.WoodPeckerActivity"
+            android:screenOrientation="landscape"
             android:process=":woodpecker">
 
             <intent-filter>
