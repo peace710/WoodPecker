@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">CrashPecker</string>
-    <string name="title">%1$s crashed at %2$s</string>
+    <string name="title"><![CDATA[%1$s crashed at <font color="#F7FF75">%2$s</font>]]></string>
     <string name="app_no_problem">No problem with the app</string>
 </resources>

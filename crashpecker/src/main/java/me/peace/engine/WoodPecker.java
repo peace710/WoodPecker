@@ -95,25 +95,23 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
     private void handleException(Thread thread, Throwable throwable) {
         ArrayList<String> traces = trace(throwable);
         Date crashDate = new Date();
-        String appInfo = appInfo(crashDate);
+        String crashTime = crashTime(crashDate);
         if (jump) {
-            startWoodPecker(traces,appInfo);
+            startWoodPecker(traces,crashTime);
         }
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,
             Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME,
             Utils.getApplicationName(applicationContext));
-        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_INFO,
-            appInfo);
         CrashUtils.save(applicationContext,throwable,crashDate,crashRecordCount);
 
     }
 
-    private void startWoodPecker(ArrayList<String> traces,String appInfo){
+    private void startWoodPecker(ArrayList<String> traces,String crashTime){
         Intent intent = new Intent(applicationContext, WoodPeckerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.KEY_TRACES, traces);
-        intent.putExtra(Constant.KEY_APP_INFO, appInfo);
+        intent.putExtra(Constant.KEY_CRASH_TIME, crashTime);
         intent.putExtra(Constant.KEY_HIGH_LIGHT, keys);
         intent.putExtra(Constant.KEY_WITH_TRACE, true);
         applicationContext.startActivity(intent);
@@ -128,11 +126,8 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
         return new ArrayList<>();
     }
 
-    private String appInfo(Date crashDate){
+    private String crashTime(Date crashDate){
         SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-        String dateTime = format.format(crashDate);
-        String title = applicationContext.getResources().getString(R.string.title);
-        String applicationName = Utils.getApplicationName(applicationContext);
-        return String.format(title,applicationName,dateTime);
+        return format.format(crashDate);
     }
 }

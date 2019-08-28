@@ -5,14 +5,18 @@ import android.os.Bundle;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -33,21 +37,32 @@ public class WoodPeckerActivity extends AppCompatActivity {
     private ArrayList<String> list = new ArrayList<>();
     private ArrayList<String> keys = new ArrayList<>();
     private TraceAdapter adapter;
-    private String appInfo;
+    private String crashTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_info);
         loadConfigParams();
-        initView();
         setAppTitleInfo();
+        initView();
         noProblemTip();
     }
 
     private void setAppTitleInfo(){
-        if (!TextUtils.isEmpty(appInfo)){
-            setTitle(appInfo);
+        String applicationName = Utils.getApplicationName(this);
+        LogUtils.e(TAG,"crashTime = " + crashTime);
+        if (TextUtils.isEmpty(crashTime)){
+            setTitle(applicationName);
+        }else{
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setCustomView(R.layout.crash_action_bar);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            View view = actionBar.getCustomView();
+            TextView title = (TextView)view.findViewById(R.id.crash_title);
+            String format = String.format(getString(R.string.title),applicationName,crashTime);
+            title.setText(Html.fromHtml(format));
+            title.setSelected(true);
         }
     }
 
@@ -74,7 +89,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         if (intent != null) {
             list = intent.getStringArrayListExtra(Constant.KEY_TRACES);
             keys = intent.getStringArrayListExtra(Constant.KEY_HIGH_LIGHT);
-            appInfo = intent.getStringExtra(Constant.KEY_APP_INFO);
+            crashTime = intent.getStringExtra(Constant.KEY_CRASH_TIME);
         }
     }
 
@@ -82,7 +97,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         if (file != null){
             list = loadLocalTraces(CrashUtils.read(file));
             keys = loadConfigKey();
-            appInfo = loadAppInfo(file);
+            crashTime = loadCrashTime(file.getName());
         }
     }
 
@@ -101,18 +116,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         return Utils.string2List(str);
     }
 
-    private String loadAppInfo(File file){
-        ProcessDispatcher dispatcher = new ProcessDispatcher();
-        String applicationName = dispatcher.loadSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME, "");
-        String dateTime = getCrashDate(file.getName());
-        if (!TextUtils.isEmpty(applicationName) && !TextUtils.isEmpty(dateTime)){
-            String title = getResources().getString(R.string.title);
-            return String.format(title,applicationName,dateTime);
-        }
-        return "";
-    }
-
-    private String getCrashDate(String fileName){
+    private String loadCrashTime(String fileName){
         try {
             String str = fileName.substring(0,fileName.indexOf("."));
             String[] strs = str.split("-");
