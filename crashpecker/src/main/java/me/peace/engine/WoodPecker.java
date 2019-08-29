@@ -2,8 +2,10 @@ package me.peace.engine;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +15,7 @@ import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
 import me.peace.crashpecker.R;
 import me.peace.ui.WoodPeckerActivity;
+import me.peace.utils.AsyncTaskDelegate;
 import me.peace.utils.CrashUtils;
 import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
@@ -100,11 +103,7 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
         if (jump) {
             startWoodPecker(traces,appName,crashTime);
         }
-        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,
-            Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
-        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME, appName);
-        CrashUtils.save(applicationContext,throwable,crashDate,crashRecordCount);
-
+        startCacheCrashTask(throwable,crashDate,appName);
     }
 
     private void startWoodPecker(ArrayList<String> traces,String appName,String crashTime){
@@ -130,5 +129,41 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
     private String crashTime(Date crashDate){
         SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
         return format.format(crashDate);
+    }
+
+
+
+    private void startCacheCrashTask(Throwable throwable,Date crashDate,String appName){
+        try {
+            AsyncTaskDelegate.execute(new CrashCacheTask(appName,crashDate,throwable),new String[]{});
+        } catch (IOException e) {
+            e.printStackTrace();
+            LogUtils.e(TAG,"cacheCrash failed , e = " + e);
+        }
+    }
+
+     public class CrashCacheTask extends AsyncTask<String, Void, Void> {
+        private String appName;
+        private Date crashDate;
+        private Throwable throwable;
+
+        public CrashCacheTask(String appName, Date crashDate, Throwable throwable) {
+            this.appName = appName;
+            this.crashDate = crashDate;
+            this.throwable = throwable;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            cacheCrash(throwable,crashDate,appName);
+            return null;
+        }
+    }
+
+    private void cacheCrash(Throwable throwable,Date crashDate,String appName){
+        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,
+            Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
+        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME, appName);
+        CrashUtils.save(applicationContext,throwable,crashDate,crashRecordCount);
     }
 }
