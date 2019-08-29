@@ -9,6 +9,7 @@
     android:clipToPadding="false"
     android:clipChildren="false"
     android:padding="@dimen/trace_item_padding"
+    android:layout_margin="@dimen/trace_item_margin"
     android:descendantFocusability="blocksDescendants">
     
     <Space

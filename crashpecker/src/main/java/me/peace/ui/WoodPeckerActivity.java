@@ -37,33 +37,27 @@ public class WoodPeckerActivity extends AppCompatActivity {
     private ArrayList<String> list = new ArrayList<>();
     private ArrayList<String> keys = new ArrayList<>();
     private TraceAdapter adapter;
-    private String crashTime;
+    private String appName = "";
+    private String crashTime = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_info);
         loadConfigParams();
-        setAppTitleInfo();
+        initActionBar();
         initView();
         noProblemTip();
     }
 
-    private void setAppTitleInfo(){
-        String applicationName = Utils.getApplicationName(this);
-        LogUtils.e(TAG,"crashTime = " + crashTime);
-        if (TextUtils.isEmpty(crashTime)){
-            setTitle(applicationName);
-        }else{
-            ActionBar actionBar = getSupportActionBar();
-            actionBar.setCustomView(R.layout.crash_action_bar);
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            View view = actionBar.getCustomView();
-            TextView title = (TextView)view.findViewById(R.id.crash_title);
-            String format = String.format(getString(R.string.title),applicationName,crashTime);
-            title.setText(Html.fromHtml(format));
-            title.setSelected(true);
+    private void initActionBar(){
+        if (!TextUtils.isEmpty(appName)){
+            setTitle(appName);
         }
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.ic_logo);
+        actionBar.setDisplayUseLogoEnabled(true);
     }
 
     private void initView(){
@@ -83,6 +77,16 @@ public class WoodPeckerActivity extends AppCompatActivity {
         }else{
             loadConfigParamsFromFile(CrashUtils.getCrashFile(this));
         }
+        addCrashInfo();
+    }
+
+    private void addCrashInfo(){
+        if (list != null && list.size() > 0){
+            if (!TextUtils.isEmpty(appName) && !TextUtils.isEmpty(crashTime)) {
+                String format = getString(R.string.cause_description);
+                list.add(0,String.format(format, appName, crashTime));
+            }
+        }
     }
 
     private void loadConfigParamsFromIntent(Intent intent){
@@ -90,6 +94,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
             list = intent.getStringArrayListExtra(Constant.KEY_TRACES);
             keys = intent.getStringArrayListExtra(Constant.KEY_HIGH_LIGHT);
             crashTime = intent.getStringExtra(Constant.KEY_CRASH_TIME);
+            appName = intent.getStringExtra(Constant.KEY_APP_NAME);
         }
     }
 
@@ -98,6 +103,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
             list = loadLocalTraces(CrashUtils.read(file));
             keys = loadConfigKey();
             crashTime = loadCrashTime(file.getName());
+            appName = loadApplicationName();
         }
     }
 
@@ -125,6 +131,12 @@ public class WoodPeckerActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private String loadApplicationName(){
+        ProcessDispatcher dispatcher = new ProcessDispatcher();
+        return dispatcher.loadSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME,
+            "");
     }
 
     private void toast(@StringRes int id){

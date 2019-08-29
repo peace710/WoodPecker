@@ -43,6 +43,7 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
         controlTextState(crashViewHolder,trace.startsWith(TRACE_AT));
         crashViewHolder.trace.setText(handleHighLightText(crashViewHolder,trace,position));
         controlTextSelected(crashViewHolder,position);
+        controlCrashDescription(crashViewHolder,position);
     }
 
     @Override
@@ -93,6 +94,13 @@ public class TraceAdapter extends RecyclerView.Adapter<TraceAdapter.CrashViewHol
             .append(StringStyleUtils.format(holder.trace.getContext(),trace.substring(index),
                 R.style.HighLightTextAppearance));
         return builder.subSequence(0,builder.length());
+    }
+
+    private void controlCrashDescription(CrashViewHolder holder,int position){
+        if (0 == position){
+            Resources res = holder.trace.getResources();
+            holder.trace.setTextColor(res.getColor(R.color.color_yellow));
+        }
     }
 
     private void controlTextSelected(CrashViewHolder holder,int position){

@@ -94,26 +94,27 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
 
     private void handleException(Thread thread, Throwable throwable) {
         ArrayList<String> traces = trace(throwable);
+        String appName = Utils.getApplicationName(applicationContext);
         Date crashDate = new Date();
         String crashTime = crashTime(crashDate);
         if (jump) {
-            startWoodPecker(traces,crashTime);
+            startWoodPecker(traces,appName,crashTime);
         }
         dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,
             Constant.KEY_HIGH_LIGHT,Utils.list2String(keys));
-        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME,
-            Utils.getApplicationName(applicationContext));
+        dispatcher.saveSpString(applicationContext,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME, appName);
         CrashUtils.save(applicationContext,throwable,crashDate,crashRecordCount);
 
     }
 
-    private void startWoodPecker(ArrayList<String> traces,String crashTime){
+    private void startWoodPecker(ArrayList<String> traces,String appName,String crashTime){
         Intent intent = new Intent(applicationContext, WoodPeckerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.KEY_TRACES, traces);
         intent.putExtra(Constant.KEY_CRASH_TIME, crashTime);
         intent.putExtra(Constant.KEY_HIGH_LIGHT, keys);
         intent.putExtra(Constant.KEY_WITH_TRACE, true);
+        intent.putExtra(Constant.KEY_APP_NAME,appName);
         applicationContext.startActivity(intent);
     }
 
