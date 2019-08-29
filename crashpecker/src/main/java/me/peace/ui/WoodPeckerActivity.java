@@ -54,10 +54,6 @@ public class WoodPeckerActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(appName)){
             setTitle(appName);
         }
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setLogo(R.drawable.ic_logo);
-        actionBar.setDisplayUseLogoEnabled(true);
     }
 
     private void initView(){
