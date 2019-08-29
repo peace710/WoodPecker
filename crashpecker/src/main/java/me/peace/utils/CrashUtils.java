@@ -15,9 +15,8 @@ import me.peace.constant.Constant;
 
 public class CrashUtils {
     public static boolean save(Context context, Throwable throwable,
-                               Date crashDate,int crashRecordCount){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        String fileName = "Crash-" + format.format(crashDate) + ".log";
+                              String date,int crashRecordCount){
+        String fileName = "Crash-" + date + ".log";
         String crashDir = context.getCacheDir().getPath() + Constant.CRASH_DIR;
         String crashPath = crashDir + fileName;
 

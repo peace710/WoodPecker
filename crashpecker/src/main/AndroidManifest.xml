@@ -23,5 +23,7 @@
             android:process=":woodpecker"
             android:exported="true"
             ></provider>
+        <service android:name="me.peace.ui.CrashCacheService"
+            android:process=":woodpecker"></service>
     </application>
 </manifest>
