@@ -1,31 +1,31 @@
 package me.peace.ui;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import me.peace.communication.ProcessDispatcher;
 import me.peace.constant.Constant;
 import me.peace.crashpecker.R;
+import me.peace.utils.AsyncTaskDelegate;
 import me.peace.utils.CrashUtils;
 import me.peace.utils.LogUtils;
 import me.peace.utils.Utils;
@@ -44,10 +44,18 @@ public class WoodPeckerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_info);
-        loadConfigParams();
-        initActionBar();
+        LogUtils.e(TAG,"WoodPeckerActivity onCreate");
         initView();
-        noProblemTip();
+        fetchCrashInfo();
+    }
+
+    private void fetchFromFile(){
+        try {
+            AsyncTaskDelegate.execute(new CrashFetchTask(this),new String[]{});
+        } catch (IOException e) {
+            e.printStackTrace();
+            toast(R.string.fetch_crash_info_error);
+        }
     }
 
     private void initActionBar(){
@@ -61,19 +69,35 @@ public class WoodPeckerActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void initRecyclerView(){
+        LogUtils.e(TAG,"WoodPeckerActivity initRecyclerView");
         adapter = new TraceAdapter(list,keys);
         recyclerView.setAdapter(adapter);
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(listener);
     }
 
-    private void loadConfigParams(){
+    private void fetchCrashInfo(){
         Intent intent = getIntent();
         if (intent.hasExtra(Constant.KEY_WITH_TRACE)) {
-            loadConfigParamsFromIntent(intent);
+            fetchCrashInfoFromIntent(intent);
+            addCrashInfo();
+            loadUiView();
         }else{
-            loadConfigParamsFromFile(CrashUtils.getCrashFile(this));
+            fetchFromFile();
         }
+    }
+
+    private void fetchCrashInfoFromFile(){
+        fetchCrashInfoFromFile(CrashUtils.getCrashFile(this));
         addCrashInfo();
+    }
+
+    private void loadUiView(){
+        initActionBar();
+        initRecyclerView();
+        noProblemTip();
     }
 
     private void addCrashInfo(){
@@ -85,16 +109,17 @@ public class WoodPeckerActivity extends AppCompatActivity {
         }
     }
 
-    private void loadConfigParamsFromIntent(Intent intent){
+    private void fetchCrashInfoFromIntent(Intent intent){
         if (intent != null) {
             list = intent.getStringArrayListExtra(Constant.KEY_TRACES);
             keys = intent.getStringArrayListExtra(Constant.KEY_HIGH_LIGHT);
             crashTime = intent.getStringExtra(Constant.KEY_CRASH_TIME);
             appName = intent.getStringExtra(Constant.KEY_APP_NAME);
+            LogUtils.e(TAG,"WoodPeckerActivity fetchCrashInfoFromIntent");
         }
     }
 
-    private void loadConfigParamsFromFile(File file){
+    private void fetchCrashInfoFromFile(File file){
         if (file != null){
             list = loadLocalTraces(CrashUtils.read(file));
             keys = loadConfigKey();
@@ -191,5 +216,30 @@ public class WoodPeckerActivity extends AppCompatActivity {
             }
         }
     };
+
+    static class CrashFetchTask extends AsyncTask<String,Void,Void>{
+
+        WeakReference<WoodPeckerActivity> weakReference;
+
+        public CrashFetchTask(WoodPeckerActivity activity) {
+            this.weakReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            if (weakReference != null && weakReference.get() != null){
+                weakReference.get().fetchCrashInfoFromFile();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (weakReference != null && weakReference.get() != null){
+                weakReference.get().loadUiView();
+            }
+        }
+    }
 
 }

@@ -2,4 +2,5 @@
     <string name="app_name">CrashPecker</string>
     <string name="cause_description">%1$s crashed at %2$s</string>
     <string name="app_no_problem">No problem with the app</string>
+    <string name="fetch_crash_info_error">Error when crash info fetched</string>
 </resources>

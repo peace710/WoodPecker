@@ -93,10 +93,10 @@ public class WoodPecker implements Thread.UncaughtExceptionHandler {
         String appName = Utils.getApplicationName(applicationContext);
         Date crashDate = new Date();
         String crashTime = crashTime(crashDate);
+        startCrashCacheService(throwable,crashDate,appName);
         if (jump) {
             startWoodPecker(traces,appName,crashTime);
         }
-        startCrashCacheService(throwable,crashDate,appName);
     }
 
     private void startWoodPecker(ArrayList<String> traces,String appName,String crashTime){

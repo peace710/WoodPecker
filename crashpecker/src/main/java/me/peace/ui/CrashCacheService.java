@@ -48,6 +48,7 @@ public class CrashCacheService extends IntentService {
             Constant.KEY_HIGH_LIGHT, Utils.list2String(keys));
         dispatcher.saveSpString(this,Constant.WOOD_PECKER_SP,Constant.KEY_APP_NAME, appName);
         CrashUtils.save(this,throwable,crashDate,crashRecordCount);
+        stopSelf();
         LogUtils.e(TAG,"service onHandleIntent end");
     }
 
