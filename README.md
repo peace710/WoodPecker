@@ -1,6 +1,6 @@
 # WoodPecker
 A Uncaught Exception Handler library ~~studied~~ copied from [drakeet](https://github.com/drakeet)
-![WoodPecker](https://github.com/peace710/WoodPecker/blob/master/screenshots/device-2019-08-13-202539.png)
+![WoodPecker](https://github.com/peace710/WoodPecker/blob/master/screenshots/device-2019-08-30-154348.png)
 
 #### Usage
 
