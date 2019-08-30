@@ -7,7 +7,7 @@ A Uncaught Exception Handler library ~~studied~~ copied from [drakeet](https://g
 To add a dependency using Gradle:
 
 ```groovy
-implementation 'me.peace:crashpecker:2.0.0'
+implementation 'me.peace:crashpecker:3.0.0'
 ```
 
 In your Application class:
