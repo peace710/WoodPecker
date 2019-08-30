@@ -147,7 +147,7 @@ public class WoodPeckerActivity extends AppCompatActivity {
         try {
             String str = fileName.substring(0,fileName.indexOf("."));
             String[] strs = str.split("-");
-            return strs[1] + "-" + strs[2] + "-" + strs[3] + " " + strs[4] + ":" + strs[5] + ":" + strs[6];
+            return strs[1] + "." + strs[2] + "." + strs[3] + " " + strs[4] + ":" + strs[5] + ":" + strs[6];
         } catch (Exception e) {
             e.printStackTrace();
         }
