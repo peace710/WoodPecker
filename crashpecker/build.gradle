@@ -13,7 +13,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 4
-        versionName "4.0.0"
+        versionName "4.0.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -77,7 +77,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'me.peace.pecker'
                 artifactId = 'woodpecker'
-                version = '4.0.0'
+                version = '4.0.6'
             }
             // Creates a Maven publication called “debug”.
             debug(MavenPublication) {
@@ -86,7 +86,7 @@ afterEvaluate {
 
                 groupId = 'me.peace.pecker'
                 artifactId = 'woodpecker-debug'
-                version = '4.0.0'
+                version = '4.0.6'
             }
         }
     }
