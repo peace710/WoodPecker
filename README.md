@@ -4,19 +4,36 @@ A Uncaught Exception Handler library ~~studied~~ copied from [drakeet](https://g
 
 #### Usage
 
-To add a dependency using Gradle:
+
+Add the JitPack repository to your build file
+```groovy
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+To add a dependency using gradle:
 
 ```groovy
-implementation 'me.peace:crashpecker:3.0.0'
+	dependencies {
+	        implementation 'com.github.peace710:WoodPecker:4.0.0'
+	}
 ```
 
 In your Application class:
-```java
-public class App extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-         WoodPecker.instance().with(new String[]{"com.addon"}).jump(false).fly(this);
+```kotlin
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        val stringArray = resources.getStringArray(R.array.keys)
+        val keys = ArrayList<String>()
+        stringArray.forEach {
+            keys.add(it)
+        }
+        instance().with(keys).jump(false).count(10).fly(this)
     }
 }
 ```
@@ -27,7 +44,7 @@ License
 =======
 MIT License
 
-Copyright (c) 2019 peace710
+Copyright (c) 2021 peace710
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
