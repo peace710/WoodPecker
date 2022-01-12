@@ -33,7 +33,7 @@ class App : Application() {
         stringArray.forEach {
             keys.add(it)
         }
-        instance().with(keys).jump(false).count(10).fly(this)
+        woodPecker().with(keys).jump(false).count(10).fly(this)
     }
 }
 ```
