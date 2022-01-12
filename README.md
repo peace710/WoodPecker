@@ -19,7 +19,7 @@ To add a dependency using gradle:
 
 ```groovy
 	dependencies {
-	        implementation 'com.github.peace710:WoodPecker:4.0.6'
+	        implementation 'com.github.peace710.WoodPecker:woodpecker:4.0.6'
 	}
 ```
 
