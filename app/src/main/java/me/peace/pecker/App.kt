@@ -1,7 +1,7 @@
 package me.peace.pecker
 
 import android.app.Application
-import me.peace.engine.WoodPecker.Companion.instance
+import me.peace.engine.WoodPecker.Companion.woodPecker
 
 class App : Application() {
     override fun onCreate() {
@@ -11,6 +11,6 @@ class App : Application() {
         stringArray.forEach {
             keys.add(it)
         }
-        instance().with(keys).jump(false).count(10).fly(this)
+        woodPecker().with(keys).jump(false).count(10).fly(this)
     }
 }

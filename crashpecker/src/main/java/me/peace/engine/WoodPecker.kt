@@ -129,7 +129,7 @@ class WoodPecker private constructor() : Thread.UncaughtExceptionHandler {
     companion object {
         private val TAG = WoodPecker::class.java.simpleName
         @JvmStatic
-        fun instance(): WoodPecker {
+        fun woodPecker(): WoodPecker {
             return WoodPeckerHolder.instance
         }
     }
